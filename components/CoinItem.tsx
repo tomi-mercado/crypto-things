@@ -9,7 +9,7 @@ interface CoinItemProps {
 
 const CoinItem: React.FC<CoinItemProps> = ({ coin }) => {
   return (
-    <li className="grid grid-cols-[36px,1fr,1fr,1fr] items-center gap-4 p-2 hover:bg-yellow-100 hover:text-black">
+    <li className="grid grid-cols-[36px,1fr,1fr,1fr] items-center gap-4 p-2 hover:bg-gray-700">
       <div className="justify-self-center">
         <Image src={coin.image} alt={coin.name} width={24} height={24} />
       </div>
