@@ -35,7 +35,7 @@ const wrapper = tv({
 });
 
 const decorator = tv({
-  base: "join-item badge-primary rounded-md flex justify-center items-center min-w-[36px] max-w-[48px] border border-primary",
+  base: "join-item badge-primary flex justify-center items-center min-w-[36px] max-w-[48px] border border-primary",
 });
 
 const Input: React.FC<InputProps> = ({
@@ -59,7 +59,7 @@ const Input: React.FC<InputProps> = ({
       <div
         className={wrapper({
           behaviour: isJoined ? "joined" : undefined,
-          outline: isFocused ? "focused" : undefined,
+          outline: isFocused && isJoined ? "focused" : undefined,
         })}
       >
         {leftDecorator && <div className={decorator()}>{leftDecorator}</div>}

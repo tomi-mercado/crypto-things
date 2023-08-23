@@ -95,7 +95,7 @@ export default async function ResultsLayout({
           </MainItemData>
 
           <MainItemData title="Market Cap">
-            {formatToCurrency(coin.market_data.market_cap.usd, "USD")}
+            {formatToCurrency(coin.market_data.market_cap.usd, "USD", 0)}
           </MainItemData>
         </div>
       </div>
