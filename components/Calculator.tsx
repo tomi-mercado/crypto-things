@@ -13,6 +13,7 @@ interface CalculatorProps {
     to: string;
     periodicity: string;
   };
+  onSubmit?: (formData: FormData) => void;
 }
 
 const calculationSchema = z.object({
@@ -58,7 +59,7 @@ const isValidName = (name: string): name is keyof typeof initialErrors => {
   return Object.keys(initialErrors).includes(name);
 };
 
-const Calculator: React.FC<CalculatorProps> = ({ defaultValues }) => {
+const Calculator: React.FC<CalculatorProps> = ({ defaultValues, onSubmit }) => {
   const [errors, setErrors] = React.useState(initialErrors);
 
   const handleSubmit = async (formData: FormData) => {
@@ -73,6 +74,7 @@ const Calculator: React.FC<CalculatorProps> = ({ defaultValues }) => {
       calculationSchema.parse(data);
       setErrors(initialErrors);
       await setCalculation(formData);
+      onSubmit?.(formData);
     } catch (e) {
       const error = e as z.ZodError;
 

@@ -16,7 +16,7 @@ const MainItemData: React.FC<MainItemDataProps> = ({
   title,
   className,
 }) => {
-  const textClassName = "text-xl font-semibold";
+  const textClassName = "text-lg md:text-xl font-semibold";
 
   return (
     <div className={`w-fit text-center ${className || ""}`}>
