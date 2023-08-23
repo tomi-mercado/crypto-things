@@ -254,3 +254,9 @@ export enum TrustScore {
   Green = "green",
   Red = "red",
 }
+
+type DateInUnix = number;
+type Price = number;
+export interface Historical {
+  prices: [DateInUnix, Price][];
+}

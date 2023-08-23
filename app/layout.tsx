@@ -21,7 +21,7 @@ export default async function RootLayout({
     <html lang="en">
       <body className="h-screen">
         <Header title="Crypto Things" />
-        <div className="grid grid-cols-[1fr,3fr] gap-4 h-[calc(100vh-68px)] mt-4">
+        <div className="grid grid-cols-[1fr,3fr] gap-4 h-[calc(100vh-68px)] pr-4 pb-4 mt-4">
           <ul className="grid gap-4 overflow-scroll">
             {coins.map((coin) => (
               <Link key={coin.id} href={`${coin.id}`}>

@@ -2,6 +2,7 @@ import { CoinResume } from "@/types/coins";
 import formatToCurrency from "@/utils/formatToCurrency";
 import Image from "next/image";
 import React from "react";
+import PriceChangePercentage from "./PriceChangePercentage";
 
 interface CoinItemProps {
   coin: CoinResume;
@@ -19,17 +20,12 @@ const CoinItem: React.FC<CoinItemProps> = ({ coin }) => {
       </div>
 
       <div className="font-bold">
-        {formatToCurrency(coin.current_price, "USD")}
+        {formatToCurrency(coin.current_price, "USD", 4)}
       </div>
-      <div
-        className={`${
-          coin.price_change_percentage_24h >= 0
-            ? "text-green-500"
-            : "text-red-500"
-        } justify-self-center`}
-      >
-        {coin.price_change_percentage_24h.toFixed(2)}%
-      </div>
+      <PriceChangePercentage
+        priceChangePercentage={coin.price_change_percentage_24h}
+        className="justify-self-center"
+      />
     </li>
   );
 };
