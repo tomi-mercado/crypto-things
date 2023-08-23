@@ -1,25 +1,28 @@
 import { getCalculation } from "@/actions/calculatorActions";
 import api from "@/api";
-import Calculator from "@/components/Calculator";
 import PriceChangePercentage from "@/components/PriceChangePercentage";
-import ResultInvestment from "@/components/Result";
 import formatToCurrency from "@/utils/formatToCurrency";
-import Image from "next/image";
+import { differenceInDays } from "date-fns";
 import React from "react";
 
 interface MainItemDataProps {
   children: React.ReactNode;
   title: string;
+  className?: string;
 }
 
-const MainItemData: React.FC<MainItemDataProps> = ({ children, title }) => {
-  const className = "text-2xl font-semibold";
+const MainItemData: React.FC<MainItemDataProps> = ({
+  children,
+  title,
+  className,
+}) => {
+  const textClassName = "text-xl font-semibold";
 
   return (
-    <div className="w-fit text-center">
+    <div className={`w-fit text-center ${className || ""}`}>
       <p className="text-sm">{title}</p>
       {!React.isValidElement(children) ? (
-        <p className={className}>{children}</p>
+        <p className={textClassName}>{children}</p>
       ) : (
         React.cloneElement(children, {
           // @ts-expect-error
@@ -30,72 +33,113 @@ const MainItemData: React.FC<MainItemDataProps> = ({ children, title }) => {
   );
 };
 
-export default async function CoinPage({
-  params: { id },
-}: {
-  params: { id: string };
-}) {
-  const coin = await api.coins.getById(id);
+const divideDaysInto = {
+  daily: 1,
+  weekly: 7,
+  monthly: 30,
+};
+
+const ResultsPage = async ({ params: { id } }: { params: { id: string } }) => {
+  const coinData = await api.coins.getById(id);
+
   const calculation = getCalculation();
 
-  const periodicityText = {
-    daily: "day",
-    weekly: "week",
-    monthly: "month",
-  };
+  if (!calculation) {
+    return null;
+  }
+
+  const { amount, from, to, periodicity } = calculation;
+
+  const historicalData = await api.coins.getHistoricalById(
+    id,
+    new Date(from),
+    new Date(to)
+  );
+
+  const firstDayInUnix = historicalData.prices[0][0];
+  const diffDays = differenceInDays(new Date(to), new Date(firstDayInUnix));
+
+  const totalInvested = amount * (diffDays / divideDaysInto[periodicity]);
+
+  const totalCoinBought = {
+    daily: historicalData.prices.reduce((acc, [_, dayPrice]) => {
+      return acc + amount / dayPrice;
+    }, 0),
+    weekly: historicalData.prices.reduce((acc, [_, dayPrice], index) => {
+      if (index % divideDaysInto[periodicity] === 0) {
+        return acc + amount / dayPrice;
+      }
+
+      return acc;
+    }, 0),
+    monthly: historicalData.prices.reduce((acc, [_, dayPrice], index) => {
+      if (index % divideDaysInto[periodicity] === 0) {
+        return acc + amount / dayPrice;
+      }
+
+      return acc;
+    }, 0),
+  }[periodicity];
+
+  const coinPriceAverage = totalInvested / totalCoinBought;
+
+  const priceIfSoldToday =
+    totalCoinBought * coinData.market_data.current_price.usd;
+  const profit = priceIfSoldToday - totalInvested;
+  const profitPercentage = (profit / totalInvested) * 100;
+
+  const priceIfSoldATH = totalCoinBought * coinData.market_data.ath.usd;
+  const profitATH = priceIfSoldATH - totalInvested;
+  const profitPercentageATH = (profitATH / totalInvested) * 100;
 
   return (
-    <div className="flex flex-col gap-10 p-4 bg-gray-800 rounded-md">
-      <div className="flex flex-col gap-4">
-        <div className="w-full flex justify-center">
-          <div className="grid grid-cols-[24px,1fr] items-center gap-2">
-            <Image
-              src={coin.image.small}
-              alt={coin.name}
-              width={24}
-              height={24}
-            />
-            <h1 className="text-4xl font-bold">{coin.name}</h1>
-          </div>
-        </div>
+    <div className="flex flex-col gap-4 self-center bg-gray-700 h-full justify-center rounded-xl">
+      <MainItemData
+        title="Total Coin Bought"
+        className="w-full items-center flex flex-col"
+      >
+        {totalCoinBought} {coinData.name}
+      </MainItemData>
 
-        <div className="grid grid-cols-3 justify-items-center">
-          <MainItemData title="Current Price">
-            {formatToCurrency(coin.market_data.current_price.usd, "USD")}
-          </MainItemData>
+      <div className="grid grid-cols-2 gap-4 place-items-center justify-items-center">
+        <MainItemData title="Total Invested">
+          {formatToCurrency(totalInvested, "USD")}
+        </MainItemData>
 
-          <MainItemData title="24hs Change">
-            <PriceChangePercentage
-              priceChangePercentage={
-                coin.market_data.price_change_percentage_24h
-              }
-            />
-          </MainItemData>
+        <MainItemData title="Coin Price Average">
+          {formatToCurrency(coinPriceAverage, "USD")}
+        </MainItemData>
 
-          <MainItemData title="Market Cap">
-            {formatToCurrency(coin.market_data.market_cap.usd, "USD")}
-          </MainItemData>
-        </div>
-      </div>
+        <MainItemData title="Price if Sold Today">
+          {formatToCurrency(priceIfSoldToday, "USD")}
+        </MainItemData>
 
-      <div className="flex flex-col gap-4">
-        <p className="text-2xl font-semibold text-center">
-          What would have happened if...? 🤔
-        </p>
+        <MainItemData title="Profit">
+          {formatToCurrency(profit, "USD")}{" "}
+          <PriceChangePercentage
+            priceChangePercentage={profitPercentage}
+            className="text-sm"
+            initDecorator="("
+            endDecorator=")"
+          />
+        </MainItemData>
 
-        {calculation && (
-          <p className="text-center">
-            You had bought {calculation.amount} USD of {coin.name} from{" "}
-            {calculation.from} to {calculation.to} every{" "}
-            {periodicityText[calculation.periodicity]}.
-          </p>
-        )}
+        <MainItemData title="Price if Sold ATH">
+          {formatToCurrency(priceIfSoldATH, "USD")}
+        </MainItemData>
 
-        <div className="grid grid-cols-[1fr,3fr] gap-4">
-          <Calculator defaultValues={calculation || undefined} />
-          <ResultInvestment id={id} />
-        </div>
+        <MainItemData title="Profit ATH">
+          {formatToCurrency(profitATH, "USD")}{" "}
+          <PriceChangePercentage
+            priceChangePercentage={profitPercentageATH}
+            className="text-sm"
+            initDecorator="("
+            endDecorator=")"
+          />
+        </MainItemData>
       </div>
     </div>
   );
-}
+};
+
+export default ResultsPage;
