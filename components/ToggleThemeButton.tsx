@@ -28,11 +28,6 @@ export default function ToggleThemeButton({
     const currentIndex = list.indexOf(currentTheme);
     const isLastTheme = currentIndex === list.length - 1;
 
-    // if (isLastTheme) {
-    //   setTheme(list[0]);
-    //   return;
-    // }
-
     if (currentIndex >= 0 && currentIndex < list.length && !isLastTheme) {
       setTheme(list[currentIndex + 1]);
       return;
@@ -46,7 +41,7 @@ export default function ToggleThemeButton({
       <input type="checkbox" onChange={toggleTheme} />
 
       <svg
-        className="swap-on fill-current w-10 h-10"
+        className="swap-on fill-current w-5 xl:w-10 h-5 xl:h-10"
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
       >
@@ -54,7 +49,7 @@ export default function ToggleThemeButton({
       </svg>
 
       <svg
-        className="swap-off fill-current w-10 h-10"
+        className="swap-off fill-current w-5 xl:w-10 h-5 xl:h-10"
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
       >

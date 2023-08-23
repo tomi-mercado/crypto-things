@@ -10,7 +10,7 @@ export default async function NotSelectedPage() {
     .slice(0, 6);
 
   return (
-    <div className="flex flex-col gap-6 text-center justify-center h-full">
+    <div className="flex flex-col gap-6 text-center justify-center h-full p-4">
       <h2 className="text-4xl">
         Welcome to{" "}
         <span className="underline -underline-offset-1 decoration-4 decoration-primary">
