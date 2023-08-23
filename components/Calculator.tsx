@@ -54,6 +54,10 @@ const initialErrors = {
   periodicity: "",
 };
 
+const isValidName = (name: string): name is keyof typeof initialErrors => {
+  return Object.keys(initialErrors).includes(name);
+};
+
 const Calculator: React.FC<CalculatorProps> = ({ defaultValues }) => {
   const [errors, setErrors] = React.useState(initialErrors);
 
@@ -83,14 +87,41 @@ const Calculator: React.FC<CalculatorProps> = ({ defaultValues }) => {
     }
   };
 
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+
+    if (!isValidName(name) || !errors[name]) {
+      return;
+    }
+
+    try {
+      calculationSchema.shape[name].parse(value);
+      setErrors({
+        ...errors,
+        [name]: "",
+      });
+    } catch (e) {
+      const error = e as z.ZodError;
+
+      setErrors({
+        ...errors,
+        [name]: error.errors[0].message,
+      });
+    }
+  };
+
   return (
-    <form action={handleSubmit} className="flex flex-col gap-4">
+    <form action={handleSubmit} className="flex flex-col">
       <Input
         name="amount"
         type="number"
         defaultValue={defaultValues?.amount}
         error={errors.amount}
         label="Amount"
+        onChange={handleChange}
+        leftDecorator={"$"}
       />
 
       <Input
@@ -99,6 +130,7 @@ const Calculator: React.FC<CalculatorProps> = ({ defaultValues }) => {
         defaultValue={defaultValues?.from}
         error={errors.from}
         label="From"
+        onChange={handleChange}
       />
 
       <Input
@@ -107,6 +139,7 @@ const Calculator: React.FC<CalculatorProps> = ({ defaultValues }) => {
         defaultValue={defaultValues?.to}
         error={errors.to}
         label="To"
+        onChange={handleChange}
       />
 
       <SelectInput
@@ -128,12 +161,10 @@ const Calculator: React.FC<CalculatorProps> = ({ defaultValues }) => {
         ]}
         error={errors.periodicity}
         label="Periodicity"
+        onChange={handleChange}
       />
 
-      <button
-        className="bg-yellow-100 w-full rounded-md text-gray-800 font-semibold p-2 hover:bg-yellow-200 active:bg-yellow-300"
-        type="submit"
-      >
+      <button className="btn btn-primary mt-4" type="submit">
         Calculate
       </button>
     </form>

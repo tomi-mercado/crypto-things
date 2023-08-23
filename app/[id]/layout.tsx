@@ -48,8 +48,8 @@ export default async function ResultsLayout({
   };
 
   return (
-    <div className="flex flex-col gap-10 p-6 bg-gray-800 rounded-md items-center relative">
-      <div className="absolute top-2 right-4 text-xs flex gap-1">
+    <div className="flex flex-col gap-10 p-6 rounded-md items-center relative">
+      <div className="fixed top-20 right-4 text-xs flex gap-1">
         <RefreshButton />
         <p>
           Updated{" "}

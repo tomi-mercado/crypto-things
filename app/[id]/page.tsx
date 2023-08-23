@@ -93,7 +93,7 @@ const ResultsPage = async ({ params: { id } }: { params: { id: string } }) => {
   const profitPercentageATH = (profitATH / totalInvested) * 100;
 
   return (
-    <div className="flex flex-col gap-4 self-center bg-gray-700 h-full justify-center rounded-xl">
+    <div className="flex flex-col gap-4 self-center h-full justify-center rounded-xl">
       <MainItemData
         title="Total Coin Bought"
         className="w-full items-center flex flex-col"

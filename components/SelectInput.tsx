@@ -1,4 +1,5 @@
 import React from "react";
+import { tv } from "tailwind-variants";
 
 interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   label?: string;
@@ -9,18 +10,29 @@ interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   }[];
 }
 
+const select = tv({
+  base: "select select-bordered select-primary w-full",
+  variants: {
+    color: {
+      error: "select select-error",
+    },
+  },
+});
+
 const SelectInput: React.FC<SelectProps> = ({ label, error, ...props }) => {
   return (
     <div className="flex flex-col gap-1">
       {label && (
-        <label htmlFor="amount" className="text-sm pl-1">
-          {label}
+        <label className="label" htmlFor={props.name}>
+          <span className="label-text">{label}</span>
         </label>
       )}
       <select
         id={props.name}
-        autoComplete="off"
-        className="p-2 rounded-md"
+        className={select({
+          color: error ? "error" : undefined,
+          className: props.className,
+        })}
         {...props}
       >
         {props.options.map((option) => (
@@ -29,7 +41,11 @@ const SelectInput: React.FC<SelectProps> = ({ label, error, ...props }) => {
           </option>
         ))}
       </select>
-      {error && <p className="text-red-500 text-xs">{error}</p>}
+      {error && (
+        <label className="label">
+          <span className="label-text-alt text-red-500">{error}</span>
+        </label>
+      )}
     </div>
   );
 };
