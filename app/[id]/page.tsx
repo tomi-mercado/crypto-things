@@ -55,7 +55,7 @@ export default async function CoinPage({
               width={24}
               height={24}
             />
-            <h1 className="text-3xl font-bold">{coin.name}</h1>
+            <h1 className="text-4xl font-bold">{coin.name}</h1>
           </div>
         </div>
 

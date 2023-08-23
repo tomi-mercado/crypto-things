@@ -61,9 +61,25 @@ const ResultInvestment = async ({ id }: { id: string }) => {
 
   const totalInvested = amount * (diffDays / divideDaysInto[periodicity]);
 
-  const totalCoinBought = historicalData.prices.reduce((acc, [_, dayPrice]) => {
-    return acc + amount / dayPrice;
-  }, 0);
+  const totalCoinBought = {
+    daily: historicalData.prices.reduce((acc, [_, dayPrice]) => {
+      return acc + amount / dayPrice;
+    }, 0),
+    weekly: historicalData.prices.reduce((acc, [_, dayPrice], index) => {
+      if (index % divideDaysInto[periodicity] === 0) {
+        return acc + amount / dayPrice;
+      }
+
+      return acc;
+    }, 0),
+    monthly: historicalData.prices.reduce((acc, [_, dayPrice], index) => {
+      if (index % divideDaysInto[periodicity] === 0) {
+        return acc + amount / dayPrice;
+      }
+
+      return acc;
+    }, 0),
+  }[periodicity];
 
   const coinPriceAverage = totalInvested / totalCoinBought;
 
@@ -106,11 +122,6 @@ const ResultInvestment = async ({ id }: { id: string }) => {
           />
         </MainItemData>
       </div>
-
-      {/* <div>
-        <p>Profit Percentage</p>
-        <PriceChangePercentage priceChangePercentage={profitPercentage} />
-      </div> */}
     </div>
   );
 };
