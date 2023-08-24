@@ -106,13 +106,15 @@ export default async function ResultsLayout({
           What would have happened if...? 🤔
         </p>
 
-        {calculation && (
-          <p className="text-center text-sm md:text-base">
-            You had bought {calculation.amount} USD of {coin.name} from{" "}
-            {calculation.from} to {calculation.to} every{" "}
-            {periodicityText[calculation.periodicity]}.
-          </p>
-        )}
+        <p className="text-center text-sm md:text-base">
+          {calculation
+            ? `You had bought ${calculation.amount} USD of ${coin.name} from ${
+                calculation.from
+              } to ${calculation.to} every ${
+                periodicityText[calculation.periodicity]
+              }.`
+            : "Complete the form to know it!"}
+        </p>
 
         <div className="block md:hidden">
           <CalculatorAndResultsWrapper defaultValues={calculation || undefined}>
@@ -120,7 +122,11 @@ export default async function ResultsLayout({
           </CalculatorAndResultsWrapper>
         </div>
 
-        <div className="hidden md:grid grid-cols-[1fr,3fr] gap-4">
+        <div
+          className={`hidden md:grid ${
+            !!calculation ? "grid-cols-[1fr,3fr]" : "grid-cols-1"
+          } gap-4`}
+        >
           <Calculator defaultValues={calculation || undefined} />
           {children}
         </div>

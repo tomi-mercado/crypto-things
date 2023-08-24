@@ -128,6 +128,7 @@ const Calculator: React.FC<CalculatorProps> = ({ defaultValues, onSubmit }) => {
         type="button"
         onClick={handleClear}
         className="self-end btn btn-neutral btn-xs"
+        disabled={!defaultValues}
       >
         <TrashIcon className="w-3 h-3" />
         Clear
