@@ -2,7 +2,7 @@
 
 import React from "react";
 import { z } from "zod";
-import { setCalculation } from "../actions/calculatorActions";
+import { clearCalculation, setCalculation } from "../actions/calculator";
 import Input from "./Input";
 import SelectInput from "./SelectInput";
 
@@ -61,6 +61,7 @@ const isValidName = (name: string): name is keyof typeof initialErrors => {
 
 const Calculator: React.FC<CalculatorProps> = ({ defaultValues, onSubmit }) => {
   const [errors, setErrors] = React.useState(initialErrors);
+  const formRef = React.useRef<HTMLFormElement>(null);
 
   const handleSubmit = async (formData: FormData) => {
     try {
@@ -114,8 +115,18 @@ const Calculator: React.FC<CalculatorProps> = ({ defaultValues, onSubmit }) => {
     }
   };
 
+  const handleClear = () => {
+    formRef.current?.reset();
+    clearCalculation();
+    setErrors(initialErrors);
+  };
+
   return (
-    <form action={handleSubmit} className="flex flex-col">
+    <form action={handleSubmit} className="flex flex-col" ref={formRef}>
+      <button type="button" onClick={handleClear}>
+        Clear
+      </button>
+
       <Input
         name="amount"
         type="number"

@@ -1,4 +1,4 @@
-import { getCalculation } from "@/actions/calculatorActions";
+import { getCalculation } from "@/actions/calculator";
 import api from "@/api";
 import PriceChangePercentage from "@/components/PriceChangePercentage";
 import formatToCurrency from "@/utils/formatToCurrency";

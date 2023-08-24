@@ -26,10 +26,18 @@ export const getCalculation = () => {
     to: string;
     periodicity: Periodicity;
     amount: string;
-  };
+  } | null;
+
+  if (!calculation) {
+    return null;
+  }
 
   return {
     ...calculation,
     amount: parseFloat(calculation.amount),
   };
+};
+
+export const clearCalculation = () => {
+  cookies().set("calculation", "null");
 };
