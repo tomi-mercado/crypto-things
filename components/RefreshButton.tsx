@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import React from "react";
-import RefreshIcon from "./RefreshIcon";
+import RefreshIcon from "./icons/RefreshIcon";
 
 const RefreshButton: React.FC = () => {
   const router = useRouter();

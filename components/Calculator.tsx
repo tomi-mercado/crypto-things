@@ -5,6 +5,7 @@ import { z } from "zod";
 import { clearCalculation, setCalculation } from "../actions/calculator";
 import Input from "./Input";
 import SelectInput from "./SelectInput";
+import TrashIcon from "./icons/TrashIcon";
 
 interface CalculatorProps {
   defaultValues?: {
@@ -123,7 +124,12 @@ const Calculator: React.FC<CalculatorProps> = ({ defaultValues, onSubmit }) => {
 
   return (
     <form action={handleSubmit} className="flex flex-col" ref={formRef}>
-      <button type="button" onClick={handleClear}>
+      <button
+        type="button"
+        onClick={handleClear}
+        className="self-end btn btn-neutral btn-xs"
+      >
+        <TrashIcon className="w-3 h-3" />
         Clear
       </button>
 
