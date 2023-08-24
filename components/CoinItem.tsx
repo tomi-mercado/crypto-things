@@ -11,7 +11,7 @@ interface CoinItemProps {
 const CoinItem: React.FC<CoinItemProps> = ({ coin }) => {
   return (
     <li className="w-full">
-      <button className="w-full grid grid-cols-[36px,1fr,1fr,1fr] items-center gap-4 p-2 hover:bg-primary active:bg-primary-focus text-primary-content">
+      <button className="w-full grid grid-cols-[36px,1fr,1fr] md:grid-cols-[36px,1fr,1fr,1fr] items-center gap-4 p-2 hover:bg-primary active:bg-primary-focus text-primary-content">
         <div className="justify-self-center">
           <Image src={coin.image} alt={coin.name} width={24} height={24} />
         </div>
@@ -25,7 +25,7 @@ const CoinItem: React.FC<CoinItemProps> = ({ coin }) => {
         </div>
         <PriceChangePercentage
           priceChangePercentage={coin.price_change_percentage_24h}
-          className="justify-self-center"
+          className="justify-self-center hidden md:block"
         />
       </button>
     </li>

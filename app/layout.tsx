@@ -49,7 +49,7 @@ export default async function RootLayout({
           }
         />
         <div className="grid grid-cols-1 xl:grid-cols-[1fr,3fr] gap-4 h-[calc(100vh-68px)]">
-          <div className="hidden xl:block bg-base-300">
+          <div className="hidden xl:block overflow-scroll bg-base-300">
             <Coins coins={coins} />
           </div>
           <div className="overflow-scroll no-scrollbar">{children}</div>
