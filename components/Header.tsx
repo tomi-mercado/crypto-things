@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import React, { useEffect } from "react";
 import Drawer from "./Drawer";
@@ -65,7 +66,9 @@ const Header: React.FC<HeaderProps> = ({
             />
           </div>
         )}
-        <h1 className="text-xl xl:text-3xl font-bold">💸🕯️{title}</h1>
+        <Link href="/">
+          <h1 className="text-xl xl:text-3xl font-bold">💸🕯️{title}</h1>
+        </Link>
       </div>
 
       <ToggleThemeButton theme={theme} list={themes} />
