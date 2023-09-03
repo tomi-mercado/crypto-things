@@ -2,6 +2,7 @@ import { getCalculation } from "@/actions/calculator";
 import api from "@/api";
 import PriceChangePercentage from "@/components/PriceChangePercentage";
 import formatToCurrency from "@/utils/formatToCurrency";
+import { differenceInDays } from "date-fns";
 import React from "react";
 
 interface MainItemDataProps {
@@ -54,8 +55,10 @@ const ResultsPage = async ({ params: { id } }: { params: { id: string } }) => {
     new Date(from),
     new Date(to)
   );
+  const firstDayInUnix = historicalData.prices[0][0];
+  const diffDays = differenceInDays(new Date(to), new Date(firstDayInUnix));
 
-  const totalInvested = historicalData.prices.length * amount;
+  const totalInvested = amount * (diffDays / divideDaysInto[periodicity]);
 
   const totalCoinBought = {
     daily: historicalData.prices.reduce((acc, [_, dayPrice]) => {
@@ -76,6 +79,8 @@ const ResultsPage = async ({ params: { id } }: { params: { id: string } }) => {
       return acc;
     }, 0),
   }[periodicity];
+
+  console.log(historicalData.prices.length);
 
   const coinPriceAverage = totalInvested / totalCoinBought;
 

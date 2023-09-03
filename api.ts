@@ -39,14 +39,24 @@ const api = {
         }
       ).then((res) => res.json() as Promise<Historical>);
 
-      // historical has many prices for each year in the format [dateInUnix, price],
-      // Select the price of every day nearest to 9:00 am
-      const prices = historical.prices.filter((price) => {
-        const date = new Date(price[0]);
-        return date.getHours() === 9;
-      });
+      const map = new Map<string, number>();
 
-      historical.prices = prices;
+      for (const [d, price] of historical.prices) {
+        const date = new Date(d);
+        const key = `${
+          date.getMonth() + 1
+        }-${date.getDate()}-${date.getFullYear()}`;
+
+        if (!map.has(key)) {
+          map.set(key, price);
+        }
+      }
+
+      const filteredPrices = Array.from(map.entries()).map(([d, price]) => {
+        return [new Date(d).getTime(), price];
+      }) as [number, number][];
+
+      historical.prices = filteredPrices;
 
       return historical;
     },
