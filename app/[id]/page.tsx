@@ -1,8 +1,9 @@
 import { getCalculation } from "@/actions/calculator";
 import api from "@/api";
+import AddToInvestmentsButton from "@/components/AddToInvestmentsButton";
 import PriceChangePercentage from "@/components/PriceChangePercentage";
+import { Investment } from "@/types/investments";
 import formatToCurrency from "@/utils/formatToCurrency";
-import { differenceInDays } from "date-fns";
 import React from "react";
 
 interface MainItemDataProps {
@@ -56,10 +57,7 @@ const ResultsPage = async ({ params: { id } }: { params: { id: string } }) => {
     new Date(to)
   );
 
-  const firstDayInUnix = historicalData.prices[0][0];
-  const diffDays = differenceInDays(new Date(to), new Date(firstDayInUnix));
-
-  const totalInvested = amount * (diffDays / divideDaysInto[periodicity]);
+  const totalInvested = historicalData.prices.length * amount;
 
   const totalCoinBought = {
     daily: historicalData.prices.reduce((acc, [_, dayPrice]) => {
@@ -91,6 +89,20 @@ const ResultsPage = async ({ params: { id } }: { params: { id: string } }) => {
   const priceIfSoldATH = totalCoinBought * coinData.market_data.ath.usd;
   const profitATH = priceIfSoldATH - totalInvested;
   const profitPercentageATH = (profitATH / totalInvested) * 100;
+
+  const investment: Investment = {
+    id,
+    calculation,
+    coinPriceAverage,
+    priceIfSoldATH,
+    priceIfSoldToday,
+    profit,
+    profitATH,
+    profitPercentage,
+    profitPercentageATH,
+    totalCoinBought,
+    totalInvested,
+  };
 
   return (
     <div className="flex flex-col gap-4 self-center h-full justify-center rounded-xl">
@@ -137,6 +149,9 @@ const ResultsPage = async ({ params: { id } }: { params: { id: string } }) => {
             endDecorator=")"
           />
         </MainItemData>
+      </div>
+      <div className="w-full justify-center flex">
+        <AddToInvestmentsButton investment={investment} />
       </div>
     </div>
   );
