@@ -1,8 +1,6 @@
 import { getCalculation } from "@/actions/calculator";
 import api from "@/api";
-import AddToInvestmentsButton from "@/components/AddToInvestmentsButton";
 import PriceChangePercentage from "@/components/PriceChangePercentage";
-import { Investment } from "@/types/investments";
 import formatToCurrency from "@/utils/formatToCurrency";
 import React from "react";
 
@@ -90,7 +88,7 @@ const ResultsPage = async ({ params: { id } }: { params: { id: string } }) => {
   const profitATH = priceIfSoldATH - totalInvested;
   const profitPercentageATH = (profitATH / totalInvested) * 100;
 
-  const investment: Investment = {
+  const investment = {
     id,
     calculation,
     coinPriceAverage,
@@ -149,9 +147,6 @@ const ResultsPage = async ({ params: { id } }: { params: { id: string } }) => {
             endDecorator=")"
           />
         </MainItemData>
-      </div>
-      <div className="w-full justify-center flex">
-        <AddToInvestmentsButton investment={investment} />
       </div>
     </div>
   );
